@@ -123,4 +123,113 @@
 #     display.update()
 # clock.tick(FPS)
 
+from typing import Any
+from pygame import *
+from random import * 
+score = 0
+missing = 0
+
+font.init()
+font2 = font.Font(None,30)
+
+class GameSprite(sprite.Sprite):
+    def __init__(self,player_image,player_x,player_y,player_speed):
+        super().__init__()
+        self.image = transform.scale(image.load(player_image),(60,70))
+        self.speed = player_speed
+        self.rect = self.image.get_rect()
+        self.rect.x = player_x
+        self.rect.y = player_y
+    def reset(self):
+        window.blit(self.image, (self.rect.x, self.rect.y))
+
+class Player(GameSprite):
+    def update(self):
+        keys_pressend = key.get_pressed() 
+        if keys_pressend[K_w] and self.rect.y >= 0:
+            self.rect.y -= self.speed
+        if keys_pressend[K_s] and self.rect.y <= 440:
+            self.rect.y += self.speed
+        if keys_pressend[K_a] and self.rect.x >= 0:
+            self.rect.x -= self.speed
+        if keys_pressend[K_d] and self.rect.x <= 640:
+            self.rect.x += self.speed
+    def fire(self):
+        bullet = Bullet('bullet.png',self.rect.centerx,self.rect.centery,5)
+        bullets.add(bullet)
+
+
+
+class Enemy(GameSprite):
+
+    def update(self):
+        global missing
+        self.rect.y += self.speed
+        if self.rect.y >= 500:
+            missing += 1
+            self.rect.y = 0
+            self.rect.x = randint(1,500)
+        
+class Bullet(GameSprite):
+    def update(self):
+        self.rect.y -= self.speed
+        if self.rect.y <= 0:
+            self.kill()
+
+window = display.set_mode((700,500))
+display.set_caption('Шутер')
+background = transform.scale(image.load('galaxy.jpg'),(700,500))
+clock = time.Clock()
+FPS = 60
+
+rocket = Player('rocket.png', 310,410,4)
+ufos = sprite.Group()
+for i in range(6):
+    ufo = Enemy('ufo.png',randint(0,500),randint(-200,-50),randint(1,4))
+    ufos.add(ufo)
+
+bullets = sprite.Group()
+
+
+
+mixer.init()
+mixer.music.load('space.ogg')
+mixer.music.play()
+
+
+
+finish = False
+game = True 
+while game:
+    if finish != True:
+        window.blit(background,(0,0))
+        rocket.reset()
+        rocket.update()
+        ufos.update()
+        ufos.draw(window)
+        bullets.update()
+        bullets.draw(window)
+        collides = sprite.groupcollide(ufos,bullets,True, True)
+        for c in collides:
+            score += 1
+            ufo = Enemy('ufo.png',randint(0,500),randint(-200,-50),randint(1,4))
+            ufos.add(ufo)
+        text1 = font2.render('Счет:' + str(score), 1, (255,255,255))
+        text2 = font2.render('Пропусков:' + str(missing),1,(255,255,255))
+        
+        window.blit(text1,(10,20))
+        window.blit(text2,(10,50))
+
+
+
+
+    for e in event.get():
+        if e.type == QUIT:
+            game = False
+        if e.type == MOUSEBUTTONDOWN:
+            if e.button == 1:
+                rocket.fire()
+    display.update()
+    clock.tick(FPS)
+
 
