@@ -28,40 +28,43 @@ class Player(GameSprite):
         if keys_pressend[K_d] and self.rect.x <= 640:
             self.rect.x += self.speed
 
+class Player2(GameSprite):
+    def update(self):
+        keys_pressend = key.get_pressed() 
+        if keys_pressend[K_UP] and self.rect.y >= 0:
+            self.rect.y -= self.speed
+        if keys_pressend[K_DOWN] and self.rect.y <= 440:
+            self.rect.y += self.speed
+        if keys_pressend[K_LEFT] and self.rect.x >= 0:
+            self.rect.x -= self.speed
+        if keys_pressend[K_RIGHT] and self.rect.x <= 640:
+            self.rect.x += self.speed
 
 class Enemy(GameSprite):
-
-    def update(self):
-        global missing
-        self.rect.y += self.speed
-        if self.rect.y >= 500:
-            missing += 1
-            self.rect.y = 0
-            self.rect.x = randint(1,500)
+     directionX = 'right'
+     def update(self):
+        if self.rect.x <= 0:
+            self.directionX = 'right'
+        if self.rect.x >= 650:
+            self.directionX = 'left'
         
+        if self.directionX == 'right':
+            self.rect.x += self.speed
+        if self.directionX == 'left':
+            self.rect.x -= self.speed
 
-    
 
-
-
+# фон
 window = display.set_mode((700, 500))
-display.set_caption('пинг понг')
+display.set_caption('Пинг Понг')
 background = transform.scale(image.load('zfon.jpg'), (700, 500))
 clock = time.Clock()
 FPS = 120
- 
-shariks = sprite.Group()
-for i in range(1):
-    sharik = Enemy('sharik.png',randint(0,500),randint(-200,-50),randint(1,4))
-    shariks.add(sharik)
-
-
-
-
-raketka = Player('racket.png', 310,410,4)
-ufos = sprite.Group()
-bullets = sprite.Group()
-
+# шарик
+sharik = Enemy('sharik.png',250, 250, 2)
+# ракетки
+raketka = Player('racket.png', 0,260,3)
+raketka2 = Player2('racket.png', 644,260,3)
 
 finish = False
 game = True 
@@ -70,15 +73,14 @@ while game:
         window.blit(background,(0,0))
         raketka.reset()
         raketka.update()
-        shariks.update()
-        shariks.draw(window)
-        bullets.update()
+        raketka2.reset()
+        raketka2.update()
+        sharik.reset()
+        sharik.update()
 
     for e in event.get():
         if e.type == QUIT:
             game = False
     
-
-
     display.update()
     clock.tick(FPS)
