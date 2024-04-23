@@ -4,12 +4,16 @@ from random import randint
 score = 0
 missing = 0
 
+font.init()
+font2 = font.Font(None,40)
 
 class GameSprite(sprite.Sprite):
     def __init__(self,player_image,player_x,player_y,player_speed):
         super().__init__()
         self.image = transform.scale(image.load(player_image),(60,70))
         self.speed = player_speed
+        self.speedX = player_speed
+        self.speedY = player_speed
         self.rect = self.image.get_rect()
         self.rect.x = player_x
         self.rect.y = player_y
@@ -41,17 +45,26 @@ class Player2(GameSprite):
             self.rect.x += self.speed
 
 class Enemy(GameSprite):
-     directionX = 'right'
+     
      def update(self):
-        if self.rect.x <= 0:
-            self.directionX = 'right'
-        if self.rect.x >= 650:
-            self.directionX = 'left'
+        self.rect.x += self.speedX
+        self.rect.y += self.speedY
+        if self.rect.y <= 0:
+            self.speedY *= -1
+        if self.rect.y >= 450:
+            self.speedY *= -1
+
+        if sprite.collide_rect(sharik, raketka2):
+            self.speedX *= -1
+            self.speedY *= -1
+        if sprite.collide_rect(sharik, raketka):
+            self.speedX *= -1
+            self.speedY *= -1
+            
         
-        if self.directionX == 'right':
-            self.rect.x += self.speed
-        if self.directionX == 'left':
-            self.rect.x -= self.speed
+
+
+
 
 
 # фон
@@ -59,6 +72,9 @@ window = display.set_mode((700, 500))
 display.set_caption('Пинг Понг')
 background = transform.scale(image.load('zfon.jpg'), (700, 500))
 clock = time.Clock()
+
+
+
 FPS = 120
 # шарик
 sharik = Enemy('sharik.png',250, 250, 2)
@@ -81,6 +97,10 @@ while game:
     for e in event.get():
         if e.type == QUIT:
             game = False
+    
+    text1 = font2.render(str(score), 1, (0,0,0))
+    window.blit(text1,(335,20))
+
     
     display.update()
     clock.tick(FPS)
