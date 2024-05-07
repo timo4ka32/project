@@ -27,10 +27,6 @@ class Player(GameSprite):
             self.rect.y -= self.speed
         if keys_pressend[K_s] and self.rect.y <= 440:
             self.rect.y += self.speed
-        if keys_pressend[K_a] and self.rect.x >= 0:
-            self.rect.x -= self.speed
-        if keys_pressend[K_d] and self.rect.x <= 640:
-            self.rect.x += self.speed
 
 class Player2(GameSprite):
     def update(self):
@@ -39,16 +35,20 @@ class Player2(GameSprite):
             self.rect.y -= self.speed
         if keys_pressend[K_DOWN] and self.rect.y <= 440:
             self.rect.y += self.speed
-        if keys_pressend[K_LEFT] and self.rect.x >= 0:
-            self.rect.x -= self.speed
-        if keys_pressend[K_RIGHT] and self.rect.x <= 640:
-            self.rect.x += self.speed
 
 class Enemy(GameSprite):
      
      def update(self):
+        global score
+        global missing
         self.rect.x += self.speedX
         self.rect.y += self.speedY
+        if self.rect.x >= 650:
+            self.rect.x = 250
+            missing += 1
+        if self.rect.x <=0:
+            self.rect.x = 250
+            score += 1
         if self.rect.y <= 0:
             self.speedY *= -1
         if self.rect.y >= 450:
@@ -77,6 +77,8 @@ sharik = Enemy('sharik.png',250, 250, 2)
 raketka = Player('racket.png', 50,240,3)
 raketka2 = Player2('racket.png', 594,240,3)
 
+
+
 finish = False
 game = True 
 while game:
@@ -94,10 +96,10 @@ while game:
             game = False
     
     text1 = font2.render(str(score), 1, (0,0,0))
-    window.blit(text1,(335,20))
+    window.blit(text1,(375,50))
 
+    text2 = font2.render(str(missing), 1, (0,0,0))
+    window.blit(text2,(300,50))
     
     display.update()
     clock.tick(FPS)
-
-
