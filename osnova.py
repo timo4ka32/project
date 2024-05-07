@@ -62,15 +62,10 @@ class Enemy(GameSprite):
             self.speedY *= -1
             
         
-
-
-
-
-
 # фон
 window = display.set_mode((700, 500))
-display.set_caption('Пинг Понг')
-background = transform.scale(image.load('zfon.jpg'), (700, 500))
+display.set_caption('Тенис')
+background = transform.scale(image.load('zfon.png'), (700, 500))
 clock = time.Clock()
 
 
@@ -79,8 +74,8 @@ FPS = 120
 # шарик
 sharik = Enemy('sharik.png',250, 250, 2)
 # ракетки
-raketka = Player('racket.png', 0,260,3)
-raketka2 = Player2('racket.png', 644,260,3)
+raketka = Player('racket.png', 50,240,3)
+raketka2 = Player2('racket.png', 594,240,3)
 
 finish = False
 game = True 
@@ -104,3 +99,5 @@ while game:
     
     display.update()
     clock.tick(FPS)
+
+
