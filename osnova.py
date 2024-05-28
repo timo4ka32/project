@@ -65,7 +65,7 @@ class Enemy(GameSprite):
 # фон
 window = display.set_mode((700, 500))
 display.set_caption('Тенис')
-background = transform.scale(image.load('zfon.png'), (700, 500))
+background = transform.scale(image.load('fon.jpg'), (700, 500))
 clock = time.Clock()
 
 
